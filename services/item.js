@@ -5,7 +5,7 @@ module.exports = {
 		connection.execute('SELECT item.id, item.name,'+
 			'item.quantity - CASE WHEN orderItem.itemID IS NOT NULL THEN count(*) ELSE 0 END AS available '+
 		'FROM item '+
-		'LEFT JOIN orderItem ON item.id = orderItem.itemID '+
+		'LEFT JOIN orderItem ON item.id = orderItem.itemID AND orderItem.deletedAt IS NULL '+
 		'WHERE departmentID = 4 GROUP BY item.id', (err, rows, fields) =>{
 	  		if (err) throw err
 	  		res.send({ rows });

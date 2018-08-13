@@ -66,6 +66,9 @@ const styles = {
 		margin: "8px",
 		minWidth: 120,
 	},
+	dialogBold: {
+		fontWeight: "bold"
+	}
 };
 
 export default class Items extends React.Component {
@@ -77,15 +80,21 @@ export default class Items extends React.Component {
 			basket: [],
 			search: '',
 			open: false,
+			warningOpen: false,
 			carreerID: 1,
 			name: "",
-			studentID: ""
+			studentID: "",
+			item: {},
+			index: false
 		};
 	}
 
 	onCardClick = (item, index) => {
-		let {basket, displayItems} = this.state;
-		const foundIndex = basket.findIndex(basketItem => basketItem.id == item.id);
+		this.setState({warningOpen: true, item, index});
+	};
+	handleWarningConfirm = () => {
+		let {basket, displayItems, item, index} = this.state;
+		const foundIndex = basket.findIndex(basketItem => basketItem.id === item.id);
 		if(foundIndex !== -1){
 			basket[foundIndex].quantity++;
 		}
@@ -93,8 +102,11 @@ export default class Items extends React.Component {
 			basket.push({id: item.id, name: item.name, quantity: 1})
 		}
 		displayItems[index].available--;
-		this.setState({basket, displayItems});
+		this.setState({basket, displayItems, warningOpen: false});
 	};
+	handleWarningClose = () => {
+		this.setState({warningOpen: false});
+	}
 	onSearchChange = (event) => {
 		const displayItems = this.props.items.filter(item => item.name.toUpperCase().includes(event.target.value.toUpperCase()));
 		this.setState({search: event.target.value, displayItems});
@@ -115,17 +127,20 @@ export default class Items extends React.Component {
   	handleOrderConfirm = async () => {
   		const {basket, carreerID, name, studentID} = this.state;
   		await fetch("/order", {
-			method: 'POST', // or 'PUT'
+			method: 'POST',
 			body: JSON.stringify({basket, carreerID, name, studentID}), // data can be `string` or {object}!
 			headers:{
 				'Content-Type': 'application/json'
 			}
 		});
-		this.setState({ open: false });
+		this.setState({ open: false, basket: [] });
+  	};
+  	handleClear = () =>{
+  		this.setState({ displayItems: this.props.items, search: "", open: false, basket: [] });
   	}
   	render() {
-  		const {displayItems, carreers, carreerID, search, basket} = this.state;
-  		console.log(this);
+  		const {displayItems, carreers, carreerID, search, basket, item} = this.state;
+  		console.log(this.props.items);
 		return (
 			<div>
 				<div>
@@ -159,7 +174,7 @@ export default class Items extends React.Component {
 						  	Por favor revisa que esté completa tu orden.
 						</DialogContentText>
 						{basket.map(item => (
-							<DialogContentText key={item.id}>
+							<DialogContentText style={styles.dialogBold} key={item.id}>
 							  	{item.name} ({item.quantity})
 							</DialogContentText>))}
 						<TextField
@@ -173,7 +188,6 @@ export default class Items extends React.Component {
 						/>
 						<TextField
 							style={styles.formControl}
-						  	autoFocus
 						  	margin="dense"
 						  	id="studentID"
 						  	label="Registro"
@@ -195,11 +209,34 @@ export default class Items extends React.Component {
 						</FormControl>
 					</DialogContent>
 					<DialogActions>
-						<Button onClick={this.handleClose} color="primary">
-					  		Cancel
-						</Button>
 						<Button onClick={this.handleOrderConfirm} color="primary">
 					  		Confirmar
+						</Button>
+						<Button onClick={this.handleClose} color="primary">
+					  		Cancelar
+						</Button>
+						{/*<Button onClick={this.handleClear} color="primary">
+					  		Limpiar Orden
+						</Button>*/}
+					</DialogActions>
+				</Dialog>
+				<Dialog
+					open={this.state.warningOpen}
+					onClose={this.handleWarningClose}
+					aria-labelledby="form-dialog-title"
+				>
+					<DialogTitle id="form-dialog-title">Agregar a Orden</DialogTitle>
+					<DialogContent>
+						<DialogContentText style={styles.dialogBold}>
+						  	Desea Agregar {item.name} a la orden?
+						</DialogContentText>
+					</DialogContent>
+					<DialogActions>
+						<Button onClick={this.handleWarningConfirm} color="primary">
+					  		Confirmar
+						</Button>
+						<Button onClick={this.handleWarningClose} color="primary">
+					  		Cancelar
 						</Button>
 					</DialogActions>
 				</Dialog>
