@@ -13,7 +13,6 @@ module.exports = {
 			}
 		});
 		await connection.execute(`INSERT INTO orderItem (orderID, itemID, createdAt) VALUES ${insertItemsQuery.slice(0, -1)}`);
-	  	connection.end();
 	  	res.send({ status: "success" });
 	}
 }
