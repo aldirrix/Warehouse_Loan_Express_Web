@@ -50,7 +50,8 @@ const styles = {
 	},
 	button: {
 		margin: "8px",
-		background: "#9FFBDA"
+		background: "#000",
+		color: "#FFF"
 
 	},
 	input: {
@@ -126,13 +127,16 @@ export default class Items extends React.Component {
   	};
   	handleOrderConfirm = async () => {
   		const {basket, carreerID, name, studentID} = this.state;
-  		await fetch("/order", {
+  		const orderResponse = await fetch("/order", {
 			method: 'POST',
 			body: JSON.stringify({basket, carreerID, name, studentID}), // data can be `string` or {object}!
 			headers:{
 				'Content-Type': 'application/json'
 			}
 		});
+		if(orderResponse.status !== 200){
+			alert("Ocurrió un error al crear apartado, por favor refresca la pestaña (F5) e intenta de nuevo")
+		}
 		this.setState({ open: false, basket: [] });
   	};
   	handleClear = () =>{
