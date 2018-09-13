@@ -23,7 +23,7 @@ module.exports = {
 			await connection.execute(`INSERT INTO orderItem (orderID, itemID, createdAt) VALUES ${insertItemsQuery.slice(0, -1)}`);
 		  	res.send({ status: "success" });
 	  	}else{
-	  		await connection.execute(`UPDATE warehouse.order SET deletedAt = ${date} WHERE id = ${order.id}`);
+	  		await connection.execute(`UPDATE warehouse.order SET deletedAt = ${date} WHERE id = ${order[0].insertId}`);
 	  		res.status(500).send('Quantity Missmatch');
 	  	}
 	}
