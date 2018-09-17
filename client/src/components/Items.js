@@ -135,7 +135,7 @@ export default class Items extends React.Component {
 			}
 		});
 		if(orderResponse.status !== 200){
-			alert("Ocurrió un error al crear apartado, por favor refresca la pestaña (F5) e intenta de nuevo")
+			alert("Ocurrió un Error al crear apartado, por favor refresca la pestaña (F5) e intenta de nuevo")
 		}
 		this.setState({ open: false, basket: [] });
   	};
@@ -144,7 +144,6 @@ export default class Items extends React.Component {
   	}
   	render() {
   		const {displayItems, carreers, carreerID, search, basket, item} = this.state;
-  		console.log(this.props.items);
 		return (
 			<div>
 				<div>
