@@ -7,6 +7,7 @@ const port = process.env.PORT || 5000;
 const itemServices = require('./services/item');
 const carreerServices = require('./services/carreer');
 const orderServices = require('./services/order');
+const requestServices = require('./services/request');
 const bodyParser = require('body-parser')
 require('dotenv').config()
 
@@ -18,6 +19,8 @@ app.use(bodyParser.urlencoded({
 app.get('/items', itemServices.getAll);
 app.get('/carreers', carreerServices.getAll);
 app.post('/order', orderServices.create);
+app.get('/requests', requestServices.get);
+app.post('/request', requestServices.create);
 
 if (process.env.NODE_ENV === 'production') {
   // Serve any static files

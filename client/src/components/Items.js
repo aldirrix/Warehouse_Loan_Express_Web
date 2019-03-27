@@ -13,6 +13,7 @@ import Select from '@material-ui/core/Select';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Input from '@material-ui/core/Input';
+import CustomDialog from './CustomDialog';
 
 const styles = {
 	available: {
@@ -55,7 +56,7 @@ const styles = {
 
 	},
 	input: {
-	    width: "80%",
+	    width: "60%",
 	    padding: "12px 20px",
 	    margin: "8px 0",
 	    display: "inline-block",
@@ -86,7 +87,10 @@ export default class Items extends React.Component {
 			name: "",
 			studentID: "",
 			item: {},
-			index: false
+			index: false,
+			requestDialog: false,
+			previousPetitionItems: [],
+			currentPetitionItem: []
 		};
 	}
 
@@ -115,15 +119,17 @@ export default class Items extends React.Component {
   	handleClickOpen = () => {
 		this.setState({ open: true });
 	};
-
+	handleClickRequest = () => {
+		this.setState({ open: true, requestDialog: true });
+	};
 	handleClose = () => {
-		this.setState({ open: false });
+		this.setState({ open: false, requestDialog: false });
 	};
 	isBasketEmpty = () => {
 		return !this.state.basket.length;
 	};
-	handleChange = name => event => {
-	    this.setState({ [name]: event.target.value });
+	handleChange = name => async (event) => {
+		this.setState({ [name]: event.target.value });
   	};
   	handleOrderConfirm = async () => {
   		const {basket, carreerID, name, studentID} = this.state;
@@ -141,9 +147,11 @@ export default class Items extends React.Component {
   	};
   	handleClear = () =>{
   		this.setState({ displayItems: this.props.items, search: "", open: false, basket: [] });
-  	}
+	}
+
+
   	render() {
-  		const {displayItems, carreers, carreerID, search, basket, item} = this.state;
+		  const {displayItems, carreers, carreerID, search, basket, item} = this.state;
 		return (
 			<div>
 				<div>
@@ -161,6 +169,13 @@ export default class Items extends React.Component {
 						disabled={this.isBasketEmpty()}
 					>
 						Apartar herramienta
+					</Button>
+					<Button
+						style={styles.button}
+						size="small"
+						onClick={this.handleClickRequest}
+					>
+						Realizar Petición
 					</Button>
 				</div>
 				<Dialog
@@ -223,6 +238,11 @@ export default class Items extends React.Component {
 						</Button>*/}
 					</DialogActions>
 				</Dialog>
+				<CustomDialog
+					open={this.state.requestDialog}
+					carreers={carreers}
+					close={this.handleClose}
+				/>
 				<Dialog
 					open={this.state.warningOpen}
 					onClose={this.handleWarningClose}
