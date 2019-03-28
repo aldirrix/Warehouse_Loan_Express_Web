@@ -326,8 +326,7 @@ function IntegrationDownshift(props) {
       carreers={carreers}
       classes={classes}
       close={close}
-    >
-    </CustomDialog>
+    />
   );
 }
 

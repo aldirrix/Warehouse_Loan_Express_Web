@@ -15,14 +15,14 @@ module.exports = {
         create: async (req, res) => {
 		const {carreerID, selectedItems} = req.body;
                 const connection = await mysqlUtil.connection();
-                console.log(selectedItems)
+
                 let insertItemsQuery = "";
 	  	const date = moment().format("YYYY/MM/DD HH:mm:ss");
 
 	  	for(let item of selectedItems){
                         insertItemsQuery += `(${item.id < 50000 ? item.id : null}, "${item.name}", ${carreerID}, '${date}'),`;
                 }
-                console.log(`INSERT INTO request (itemId, name, carreerID, createdAt) VALUES ${insertItemsQuery.slice(0, -1)}`)
+
                 await connection.execute(`INSERT INTO request (itemId, name, carreerID, createdAt) VALUES ${insertItemsQuery.slice(0, -1)}`);
                 res.send({ status: "success" });
         },
