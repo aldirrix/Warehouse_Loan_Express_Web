@@ -226,7 +226,9 @@ class CustomDialog extends React.Component {
       }
     });
     if(orderResponse.status !== 200){
-      alert("Ocurrió un Error al crear apartado, por favor refresca la pestaña (F5) e intenta de nuevo")
+      alert("Ocurrió un Error al crear peticioón, por favor refresca la pestaña (F5) e intenta de nuevo")
+    } else {
+      alert("Petición realizada correctamente");
     }
     this.props.close();
     this.setState({ openDialog: false });

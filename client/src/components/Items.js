@@ -133,7 +133,10 @@ export default class Items extends React.Component {
   	};
   	handleOrderConfirm = async () => {
   		const {basket, carreerID, name, studentID} = this.state;
-  		const orderResponse = await fetch("/order", {
+		if(!basket || !carreerID || !name || !studentID) {
+			alert("Por favor introduce los datos necesarios");
+		}
+		const orderResponse = await fetch("/order", {
 			method: 'POST',
 			body: JSON.stringify({basket, carreerID, name, studentID}), // data can be `string` or {object}!
 			headers:{
@@ -142,6 +145,8 @@ export default class Items extends React.Component {
 		});
 		if(orderResponse.status !== 200){
 			alert("Ocurrió un Error al crear apartado, por favor refresca la pestaña (F5) e intenta de nuevo")
+		} else {
+			alert("Apartado realizado correctamente Tienes 30 minutos para presentarte en talleres o será eliminado");
 		}
 		this.setState({ open: false, basket: [] });
   	};
@@ -151,7 +156,7 @@ export default class Items extends React.Component {
 
 
   	render() {
-		  const {displayItems, carreers, carreerID, search, basket, item} = this.state;
+		  const {displayItems, carreers, carreerID, search, basket, item, name, studentID} = this.state;
 		return (
 			<div>
 				<div>
@@ -209,7 +214,8 @@ export default class Items extends React.Component {
 						  	margin="dense"
 						  	id="studentID"
 						  	label="Registro"
-						  	fullWidth
+							fullWidth
+							type="number"
 						  	onChange={this.handleChange('studentID')}
 						/>
 						<FormControl style={styles.formControl}>
@@ -227,7 +233,11 @@ export default class Items extends React.Component {
 						</FormControl>
 					</DialogContent>
 					<DialogActions>
-						<Button onClick={this.handleOrderConfirm} color="primary">
+						<Button
+							onClick={this.handleOrderConfirm}
+							color="primary"
+							disabled={!basket || !carreerID || !name || !studentID}
+						>
 					  		Confirmar
 						</Button>
 						<Button onClick={this.handleClose} color="primary">
